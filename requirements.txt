@@ -7,7 +7,7 @@ greenlet==0.4.13
 itsdangerous==0.24
 Jinja2==2.10.1
 MarkupSafe==1.0
-python-engineio==3.9.0
+python-engineio==3.9.3
 python-socketio==1.9.0
 six==1.11.0
 Werkzeug==0.15.3
