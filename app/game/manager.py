@@ -14,9 +14,10 @@ class Manager(object):
         self.song = song
         self.clues = {}
         self.guesses = []
+        self.time_limit = 300000  # milliseconds
 
         self.generate_room_id()
-        self._get_clues()
+        self._load_clues()
 
     @property
     def playtime(self):
@@ -34,27 +35,27 @@ class Manager(object):
             return 'Incorrect!'
         return self.song
 
-    def _get_clues(self):
-        self._add_clue('Clue 1', '1')
-        self._add_clue('Clue 2', '2')
-        self._add_clue('Clue 3', '3')
-        self._add_clue('Clue 4', '4')
+    def _load_clues(self):
+        self._add_clue('Clue_1', '1')
+        self._add_clue('Clue_2', '2')
+        self._add_clue('Clue_3', '3')
+        self._add_clue('Clue_4', '4')
 
     def _add_clue(self, clue_name, clue):
         self.clues[clue_name] = [clue, 0]
 
     def open_clue(self, clue):
         self.clues[clue][1] = 1
-        return self.clues[clue]
+        return self.clues[clue][0]
 
     def restart(self, song):
         self.song = song
         self.date_created = datetime.now()
         self.clues = {}
-        self._get_clues()
+        self._load_clues()
 
     def jsonify(self):
-        return {}
+        return {'time': self.time_limit}
 
     def generate_room_id(self):
         self.room_id = ''.join(random.SystemRandom().choice(

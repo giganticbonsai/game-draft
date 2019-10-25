@@ -1,12 +1,12 @@
-import random
-import string
-
 from flask import session, current_app
 from flask_socketio import emit, join_room, leave_room
 
-from app.game.manager import Manager
+import eventlet
+eventlet.monkey_patch()
+
 from .. import socketio, ROOMS
 
+thread = {}
 
 @socketio.on('joined', namespace='/room')
 def joined(message):
@@ -34,13 +34,28 @@ def left(message):
     emit('status', {'msg': session.get('name') + ' has left the room.'}, room=room)
 
 
-@socketio.on('create', namespace='/room')
-def create(options):
-    gm = Manager(options['song'])
-    while gm.room_id in ROOMS:
-        # Generate new id if id already in manager
-        gm.generate_room_id()
-    room_id = gm.room_id
-    ROOMS[room_id] = gm
-    join_room(room_id)
-    emit('join_room', {'room': room_id})
+@socketio.on('open_clue', namespace='/room')
+def open_clue(data):
+    room = session.get('room')
+    value = ROOMS[room].open_clue('Clue_3')
+    emit('openClue', {'clue': 'Clue_3', 'value': value}, room=room)
+
+
+@socketio.on('connect', namespace='/room')
+def on_connect():
+    global thread
+    room = session.get('room')
+    if room not in thread:
+        thread[room] = socketio.start_background_task(update_thread, current_app._get_current_object(), room)
+
+
+def update_thread(app, room):
+    with app.app_context():
+        current_time = app.config.get('ROOM_TIME_LIMIT', 300)
+        tick_time = app.config.get('ROOM_UPDATE_INTERVAL', 1)
+        while True:
+            socketio.sleep(tick_time)
+            socketio.emit('update', {'time': str(current_time)}, namespace='/room', room=room)
+            current_time -= 1
+            # End Thread if times up
+
