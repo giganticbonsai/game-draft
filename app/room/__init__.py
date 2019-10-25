@@ -2,4 +2,4 @@ from flask import Blueprint
 
 bp = Blueprint('room', __name__)
 
-from app.room import routes
+from app.room import routes, events

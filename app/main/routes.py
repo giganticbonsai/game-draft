@@ -9,8 +9,8 @@ from . import bp
 def index():
     form = JoinForm()
     if form.validate_on_submit():
-        session['name'] = form.nickname.data
+        session['name'] = form.name.data
         session['room'] = form.room.data
-        return redirect(url_for('room.room', room=session.get('room')))
+        return redirect(url_for('room.room', room=session.get('room', '')))
     return render_template('index.html', form=form)
 

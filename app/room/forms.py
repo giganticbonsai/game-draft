@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 
-class JoinForm(FlaskForm):
+class CreateForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    room = StringField('Room', validators=[DataRequired()])
-    submit = SubmitField('Join Room')
+    song = StringField('Song Title', validators=[DataRequired()])
+    submit = SubmitField('Create Room')

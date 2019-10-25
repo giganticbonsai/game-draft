@@ -4,6 +4,7 @@ from flask_socketio import SocketIO
 from config import Config
 
 socketio = SocketIO()
+ROOMS = {}
 
 
 def create_app(config_class=Config):

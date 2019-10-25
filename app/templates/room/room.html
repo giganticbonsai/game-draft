@@ -6,7 +6,7 @@
         <script type="text/javascript" charset="utf-8">
             var socket;
             $(document).ready(function(){
-                socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+                socket = io.connect('http://' + document.domain + ':' + location.port + '/room');
                 socket.on('connect', function() {
                     socket.emit('joined', {});
                 });
@@ -39,6 +39,14 @@
     </head>
     <body>
         <h1>Flask-SocketIO-Chat: {{ room }}</h1>
+        <h2>Song: {{ song }}</h2>
+        <div>
+            <ul>
+                {% for key in clues %}
+                <li>{{key}} - {{clues.key}}</li>
+                {% endfor %}
+            </ul>
+        </div>
         <textarea id="chat" cols="80" rows="20"></textarea><br><br>
         <input id="text" size="80" placeholder="Enter your message here"><br><br>
         <a href="#" onclick="leave_room();">Leave this room</a>

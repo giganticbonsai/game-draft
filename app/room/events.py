@@ -1,6 +1,11 @@
-from flask import session
+import random
+import string
+
+from flask import session, current_app
 from flask_socketio import emit, join_room, leave_room
-from .. import socketio
+
+from app.game.manager import Manager
+from .. import socketio, ROOMS
 
 
 @socketio.on('joined', namespace='/room')
@@ -28,3 +33,14 @@ def left(message):
     leave_room(room)
     emit('status', {'msg': session.get('name') + ' has left the room.'}, room=room)
 
+
+@socketio.on('create', namespace='/room')
+def create(options):
+    gm = Manager(options['song'])
+    while gm.room_id in ROOMS:
+        # Generate new id if id already in manager
+        gm.generate_room_id()
+    room_id = gm.room_id
+    ROOMS[room_id] = gm
+    join_room(room_id)
+    emit('join_room', {'room': room_id})
