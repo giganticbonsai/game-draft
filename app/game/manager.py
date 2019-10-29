@@ -1,27 +1,31 @@
 import random
 import string
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import current_app
 
 
 class Manager(object):
 
-    def __init__(self, song):
-        self.date_created = datetime.now()
+    def __init__(self, song, duration=5):
+        self.date_end = datetime.utcnow() + timedelta(minutes=duration)
         self.room_id = 0
         self.players = []
         self.song = song
         self.clues = {}
         self.guesses = []
-        self.time_limit = 300000  # milliseconds
+        self.time_limit = 300  # seconds
 
         self.generate_room_id()
         self._load_clues()
 
     @property
     def playtime(self):
-        return datetime.now() - self.date_created
+        if self.date_end <= datetime.utcnow():
+            return 'TIMES UP!'
+        td = self.date_end - datetime.utcnow()
+        time_since = divmod(td.days*86400 + td.seconds, 60)
+        return '{0} minutes, {1:02d} seconds'.format(time_since[0], time_since[1])
 
     def add_player(self, name):
         self.players.append(name)
@@ -49,13 +53,12 @@ class Manager(object):
         return self.clues[clue][0]
 
     def restart(self, song):
-        self.song = song
-        self.date_created = datetime.now()
-        self.clues = {}
-        self._load_clues()
+        pass
 
     def jsonify(self):
-        return {'time': self.time_limit}
+        return {
+            'time_limit': self.time_limit,
+            'playtime': self.playtime}
 
     def generate_room_id(self):
         self.room_id = ''.join(random.SystemRandom().choice(

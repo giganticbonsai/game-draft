@@ -45,17 +45,16 @@ def open_clue(data):
 def on_connect():
     global thread
     room = session.get('room')
+    gm = ROOMS[room]
     if room not in thread:
-        thread[room] = socketio.start_background_task(update_thread, current_app._get_current_object(), room)
+        thread[room] = socketio.start_background_task(update_thread, current_app._get_current_object(), room, gm)
 
 
-def update_thread(app, room):
+def update_thread(app, room, gm):
     with app.app_context():
-        current_time = app.config.get('ROOM_TIME_LIMIT', 300)
         tick_time = app.config.get('ROOM_UPDATE_INTERVAL', 1)
         while True:
             socketio.sleep(tick_time)
-            socketio.emit('update', {'time': str(current_time)}, namespace='/room', room=room)
-            current_time -= 1
+            socketio.emit('update', {'time': gm.playtime}, namespace='/room', room=room)
             # End Thread if times up
 

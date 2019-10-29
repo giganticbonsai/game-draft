@@ -19,7 +19,7 @@ def room(room):
 def create():
     form = CreateForm()
     if form.validate_on_submit():
-        gm = Manager(form.song.data)
+        gm = Manager(form.song.data, duration=form.duration.data)
         while gm.room_id in ROOMS:
             # Generate new id if id already in manager
             gm.generate_room_id()
