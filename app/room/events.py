@@ -37,8 +37,14 @@ def left(message):
 @socketio.on('open_clue', namespace='/room')
 def open_clue(data):
     room = session.get('room')
-    value = ROOMS[room].open_clue('Clue_3')
-    emit('openClue', {'clue': 'Clue_3', 'value': value}, room=room)
+    gm = ROOMS[room]
+    next_clue = gm.next_clue()
+    if next_clue:
+        value = gm.open_clue(next_clue)
+        emit('openClue', {'clue': next_clue, 'value': value}, room=room)
+        emit('status', {'msg': next_clue + 'Revealed!'}, room=room)
+    else:
+        emit('status', {'msg': 'No More Clues to Reveal!'}, room=room)
 
 
 @socketio.on('connect', namespace='/room')
@@ -55,6 +61,24 @@ def update_thread(app, room, gm):
         tick_time = app.config.get('ROOM_UPDATE_INTERVAL', 1)
         while True:
             socketio.sleep(tick_time)
-            socketio.emit('update', {'time': gm.playtime}, namespace='/room', room=room)
+            socketio.emit('update', {'time': gm.playtime, 'guesses': gm.latest_guess}, namespace='/room', room=room)
             # End Thread if times up
+            if not gm.playtime:
+                gm.end_game()
+                socketio.emit('status', {'msg': 'GAME OVER!'}, room=room)
+                socketio.emit('update', {'time': 'TIMES UP!', 'guesses': gm.latest_guess}, namespace='/room', room=room)
+                break
+
+
+@socketio.on('guess', namespace='/room')
+def make_guess(message):
+    name = session.get('name')
+    room = session.get('room')
+    gm = ROOMS[room]
+    guess = message['msg']
+    if gm.is_song(guess):
+        gm.end_game()
+        emit('status', {'msg': name + ' GUESSED CORRECTLY!'}, room=room)
+    else:
+        emit('guess', {'msg': name + ' guessed "{}". '.format(guess) + 'INCORRECT!'}, room=room)
 

@@ -11,7 +11,13 @@
         <div>
             <ul>
                 {% for key in clues %}
-                    <li id="{{ key }}">{{key}}</li>
+                <li id="{{ key }}">CLUE:
+                    {% if key in hidden_clues %}
+                    {{clues[key][1]}}
+                    {% else %}
+                    {{clues[key][0]}}
+                    {% endif %}
+                </li>
                 {% endfor %}
             </ul>
         </div>
@@ -19,6 +25,8 @@
         <input id="text" size="80" placeholder="Enter your message here"><br><br>
         <a href="#" onclick="open_clue();">Open Clue</a>
         <a href="#" onclick="leave_room();">Leave this room</a>
+        <h3>Latest Guesses:</h3>
+        <div id="latest_guesses"></div>
     </body>
 </html>
 

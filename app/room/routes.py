@@ -12,7 +12,8 @@ def room(room):
     session_room = session.get('room', '')
     if name == '' or session_room == '' or session_room != room or room not in ROOMS:
         return redirect(url_for('main.index'))
-    return render_template('room/room.html', room=room, name=name, song=ROOMS[room].song, clues=ROOMS[room].clues)
+    gm = ROOMS[room]
+    return render_template('room/room.html', room=room, name=name, song=gm.song, clues=gm.clues, hidden=gm.hidden_clues)
 
 
 @bp.route('/create', methods=['GET', 'POST'])

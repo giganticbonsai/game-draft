@@ -8,19 +8,25 @@ $(document).ready(function(){
         $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
         $('#chat').scrollTop($('#chat')[0].scrollHeight);
     });
-    socket.on('message', function(data) {
+    socket.on('guess', function(data) {
         $('#chat').val($('#chat').val() + data.msg + '\n');
         $('#chat').scrollTop($('#chat')[0].scrollHeight);
     });
     socket.on('update', function(data) {
         $('#time').html(data.time);
+        var guesses = data.guesses
+        latest_guesses = '';
+        for (var i = 0; i < guesses.length; i++){
+            latest_guesses = latest_guesses + '<p>' + guesses[i] + '</p>';
+        }
+        $('#latest_guesses').html(latest_guesses);
     });
     $('#text').keypress(function(e) {
         var code = e.keyCode || e.which;
         if (code == 13) {
             text = $('#text').val();
             $('#text').val('');
-            socket.emit('text', {msg: text});
+            socket.emit('guess', {msg: text});
         }
     });
     socket.on('openClue', function(data) {
@@ -37,5 +43,4 @@ function leave_room() {
 }
 function open_clue() {
     socket.emit('open_clue', {});
-    socket.emit('text', {msg: 'Clue Revealed!'});
 }
