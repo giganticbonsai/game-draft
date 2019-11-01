@@ -20,6 +20,14 @@ $(document).ready(function(){
             latest_guesses = latest_guesses + '<p>' + guesses[i] + '</p>';
         }
         $('#latest_guesses').html(latest_guesses);
+        var clues = data.clues
+        clue_values = '';
+        for (var key in clues) {
+            if (clues.hasOwnProperty(key)) {
+            clue_values = clue_values + '<li id="' + key +'">' + clues[key] + '</li>';
+            }
+        }
+        $('#clues').html(clue_values);
     });
     $('#text').keypress(function(e) {
         var code = e.keyCode || e.which;
@@ -28,9 +36,6 @@ $(document).ready(function(){
             $('#text').val('');
             socket.emit('guess', {msg: text});
         }
-    });
-    socket.on('openClue', function(data) {
-        $('#'+data.clue).text(data.value);
     });
 });
 function leave_room() {

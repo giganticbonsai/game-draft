@@ -1,3 +1,4 @@
+from __future__ import division
 import random
 import string
 from datetime import datetime, timedelta
@@ -17,10 +18,11 @@ class Manager(object):
     def _start_game(self, song, duration):
         self.date_end = datetime.utcnow() + timedelta(minutes=duration)
         self.song = song
-        self.clues = {}
+        self.clue_index = {}
         self.hidden_clues = []
         self.guesses = []
         self._load_clues()
+        self.open_clue_interval = duration/(len(self.hidden_clues)+1)
 
     @property
     def playtime(self):
@@ -28,11 +30,28 @@ class Manager(object):
             return
         td = self.date_end - datetime.utcnow()
         time_since = divmod(td.days*86400 + td.seconds, 60)
-        return '{0} minutes, {1:02d} seconds'.format(time_since[0], time_since[1])
+        return [td, '{0} minutes, {1:02d} seconds'.format(time_since[0], time_since[1])]
 
     @property
     def latest_guess(self):
         return self.guesses[0:10]
+
+    @property
+    def clues(self):
+        clues = {}
+        for k, v in self.clue_index.items():
+            if k in self.hidden_clues:
+                value = 1
+            else:
+                value = 0
+            clues[k] = v[value]
+        return clues
+
+    @property
+    def time_to_open_clue(self):
+        if not self.playtime or not self.hidden_clues:
+            return False
+        return bool(((self.playtime[0].total_seconds()/60)/len(self.hidden_clues)) < self.open_clue_interval)
 
     def add_player(self, name):
         self.players.append(name)
@@ -51,15 +70,12 @@ class Manager(object):
         self._add_clue('Clue_2', '2')
         self._add_clue('Clue_3', '3')
         self._add_clue('Clue_4', '4')
-        self.hidden_clues = self.clues.keys()
+        self.hidden_clues = self.clue_index.keys()
 
     def _add_clue(self, clue_name, clue):
-        self.clues[clue_name] = [clue, 'HIDDEN']
+        self.clue_index[clue_name] = [clue, 'HIDDEN']
 
-    def open_clue(self, clue):
-        return self.clues[clue][0]
-
-    def next_clue(self):
+    def open_next_clue(self):
         if self.hidden_clues:
             reveal = self.hidden_clues.pop()
             return reveal
@@ -74,5 +90,5 @@ class Manager(object):
 
     def end_game(self):
         while self.hidden_clues:
-            self.open_clue(self.next_clue())
+            self.open_next_clue()
 
