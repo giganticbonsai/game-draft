@@ -82,7 +82,9 @@ class Manager(object):
 
     def jsonify(self):
         return {
-            'playtime': self.playtime}
+            'time': self.playtime[1],
+            'guesses': self.latest_guess,
+            'clues': self.clues}
 
     def generate_room_id(self):
         self.room_id = ''.join(random.SystemRandom().choice(

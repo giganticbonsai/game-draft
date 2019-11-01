@@ -1,10 +1,9 @@
 from flask import session, current_app
 from flask_socketio import emit, join_room, leave_room
+from .. import socketio, ROOMS
 
 import eventlet
 eventlet.monkey_patch()
-
-from .. import socketio, ROOMS
 
 thread = {}
 
@@ -13,8 +12,11 @@ def joined(message):
     """Sent by clients when they enter a room.
     A status message is broadcast to all people in the room."""
     room = session.get('room')
+    name = session.get('name')
     join_room(room)
-    emit('status', {'msg': session.get('name') + ' has entered the room.'}, room=room)
+    gm = ROOMS[room]
+    gm.add_player(name)
+    emit('status', {'msg': name + ' has entered the room.'}, room=room)
 
 
 @socketio.on('text', namespace='/room')
@@ -30,7 +32,10 @@ def left(message):
     """Sent by clients when they leave a room.
     A status message is broadcast to all people in the room."""
     room = session.get('room')
+    name = session.get('name')
     leave_room(room)
+    gm = ROOMS[room]
+    gm.remove_player(name)
     emit('status', {'msg': session.get('name') + ' has left the room.'}, room=room)
 
 
@@ -67,7 +72,7 @@ def update_thread(app, room, gm):
             if gm.time_to_open_clue:
                 nc = gm.open_next_clue()
                 socketio.emit('status', {'msg': nc + 'Revealed!'}, namespace='/room', room=room)
-            socketio.emit('update', {'time': gm.playtime[1], 'guesses': gm.latest_guess, 'clues': gm.clues}, namespace='/room', room=room)
+            socketio.emit('update', gm.jsonify(), namespace='/room', room=room)
             socketio.sleep(tick_time)
 
 
