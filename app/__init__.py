@@ -1,10 +1,14 @@
 from flask import Flask
 from flask_socketio import SocketIO
 
+from app.spotify.auth import SpotifyCredentials
+from app.spotify.spotify import Spotify
 from config import Config
 
 socketio = SocketIO()
 ROOMS = {}
+spotify_auth = SpotifyCredentials()
+spotify = Spotify(spotify_auth)
 
 
 def create_app(config_class=Config):

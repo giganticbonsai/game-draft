@@ -1,26 +1,75 @@
-<h1>Create</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.name.label }}<br>
-            {{ form.name(size=32) }}
-            {% for error in form.name.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.song.label }}<br>
-            {{ form.song(size=32) }}
-            {% for error in form.song.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.duration.label }}<br>
-            {{ form.duration(size=32) }}
-            {% for error in form.duration.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+<html>
+    <head>
+        <title>Create Room</title>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.js"></script>
+    </head>
+
+    <style>
+     .ui-autocomplete-loading {
+       background: white url("{{ url_for('static', filename='images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+     }
+     .autocomplete-suggestions {
+        overflow: auto;
+        border: 1px solid #CBD3DD;
+        background: #FFF;
+     }
+    </style>
+
+    <body>
+        <h1>Create</h1>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.name.label }}<br>
+                    {{ form.name(size=32) }}
+                    {% for error in form.name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.song.label }}<br>
+                    {{ form.song(size=32) }}
+                    {% for error in form.song.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.artist.label }}<br>
+                    {{ form.artist(size=32) }}
+                    {% for error in form.artist.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.duration.label }}<br>
+                    {{ form.duration(size=32) }}
+                    {% for error in form.duration.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ form.submit() }}</p>
+            </form>
+    </body>
+</html>
+
+{% block javascript %}
+    <script>
+$(function() {
+$('#autocomplete').autocomplete({
+    source: function( request, response ) {
+        $.ajax( {
+          url: "{{ url_for('room.song_autocomplete') }}"+"?term="+request.term,
+          success: function( data ) {
+            response( data );
+          }
+        } );
+        },
+    minLength: 2,
+    select: function(event, ui) {
+        $('#artist').val(ui.item.artist)
+    }
+    });
+});
+    </script>
+{% endblock %}

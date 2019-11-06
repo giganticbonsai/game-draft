@@ -15,7 +15,7 @@ class SpotifyCredentials(object):
             client_id = os.environ.get('http_proxy')
 
         if not client_secret:
-            client_secret=os.environ.get('http_proxy')
+            client_secret = os.environ.get('http_proxy')
 
         if not proxies:
             proxies = {

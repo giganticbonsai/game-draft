@@ -8,9 +8,10 @@ from flask import current_app
 
 class Manager(object):
 
-    def __init__(self, song, duration=5):
+    def __init__(self, song, spotify_manager, duration=5):
         self.room_id = 0
         self.players = []
+        self.spotify = spotify_manager
 
         self.generate_room_id()
         self._start_game(song, duration)

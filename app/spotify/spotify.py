@@ -1,6 +1,5 @@
 import json
 import os
-from pprint import pprint
 
 import requests
 
@@ -55,9 +54,23 @@ class Spotify(object):
                          market=None)
         return resp['tracks']['items']
 
-    def get_track(self, track):
-        return self._get('tracks/?ids='+track,
-                         market=None)
+    def get_track(self, track_id):
+        t = self._get('tracks/?ids='+track_id,
+                      market=None)
+        if 'tracks' in t and len(t['tracks']) == 1:
+            return t['tracks'][0]
+
+    def get_artist(self, artist_id):
+        a = self._get('artists/?ids='+artist_id)
+        if 'artists' in a and len(a['artists']) == 1:
+            return a['artists'][0]
+
+    def get_album(self, album_id):
+        al = self._get('albums/?ids='+album_id)
+        if 'albums' in al and len(al['albums']) == 1:
+            return al['albums'][0]
+
+
 
 
 
