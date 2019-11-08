@@ -12,10 +12,10 @@ class SpotifyCredentials(object):
     def __init__(self, client_id=None, client_secret=None, proxies=None):
 
         if not client_id:
-            client_id = os.environ.get('http_proxy')
+            client_id = os.environ.get('SPOTIFY_ID')
 
         if not client_secret:
-            client_secret = os.environ.get('http_proxy')
+            client_secret = os.environ.get('SPOTIFY_SECRET')
 
         if not proxies:
             proxies = {

@@ -5,25 +5,24 @@ from datetime import datetime, timedelta
 
 from flask import current_app
 
+from app.game.song import Song
+
 
 class Manager(object):
 
-    def __init__(self, song, spotify_manager, duration=5):
+    def __init__(self, song, artist, spotify_manager, duration=5):
         self.room_id = 0
         self.players = []
         self.spotify = spotify_manager
 
         self.generate_room_id()
-        self._start_game(song, duration)
+        self._start_game(song, artist, duration)
 
-    def _start_game(self, song, duration):
+    def _start_game(self, song, artist, duration):
         self.date_end = datetime.utcnow() + timedelta(minutes=duration)
-        self.song = song
-        self.clue_index = {}
-        self.hidden_clues = []
+        self.song = Song(self.spotify, song, artist)
         self.guesses = []
-        self._load_clues()
-        self.open_clue_interval = duration/(len(self.hidden_clues)+1)
+        self.open_clue_interval = duration/(len(self.song.hidden_clues)+1)
 
     @property
     def playtime(self):
@@ -40,8 +39,8 @@ class Manager(object):
     @property
     def clues(self):
         clues = {}
-        for k, v in self.clue_index.items():
-            if k in self.hidden_clues:
+        for k, v in self.song.clues.items():
+            if k in self.song.hidden_clues:
                 value = 1
             else:
                 value = 0
@@ -50,9 +49,9 @@ class Manager(object):
 
     @property
     def time_to_open_clue(self):
-        if not self.playtime or not self.hidden_clues:
+        if not self.playtime or not self.song.hidden_clues:
             return False
-        return bool(((self.playtime[0].total_seconds()/60)/len(self.hidden_clues)) < self.open_clue_interval)
+        return bool(((self.playtime[0].total_seconds()/60)/len(self.song.hidden_clues)) < self.open_clue_interval)
 
     def add_player(self, name):
         self.players.append(name)
@@ -61,25 +60,10 @@ class Manager(object):
         self.players.remove(name)
 
     def is_song(self, guess):
-        if guess.lower() != self.song.lower():
+        if self.song.is_answer(guess):
             self.guesses.insert(0, guess)
             return False
         return True
-
-    def _load_clues(self):
-        self._add_clue('Clue_1', '1')
-        self._add_clue('Clue_2', '2')
-        self._add_clue('Clue_3', '3')
-        self._add_clue('Clue_4', '4')
-        self.hidden_clues = self.clue_index.keys()
-
-    def _add_clue(self, clue_name, clue):
-        self.clue_index[clue_name] = [clue, 'HIDDEN']
-
-    def open_next_clue(self):
-        if self.hidden_clues:
-            reveal = self.hidden_clues.pop()
-            return reveal
 
     def jsonify(self):
         return {
@@ -92,6 +76,6 @@ class Manager(object):
                         string.ascii_uppercase) for _ in range(current_app.config['ROOM_ID_LENGTH']))
 
     def end_game(self):
-        while self.hidden_clues:
-            self.open_next_clue()
+        while self.song.hidden_clues:
+            self.song.open_next_clue()
 

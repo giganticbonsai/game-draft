@@ -43,7 +43,7 @@ def left(message):
 def open_clue(data):
     room = session.get('room')
     gm = ROOMS[room]
-    next_clue = gm.open_next_clue()
+    next_clue = gm.song.open_next_clue()
     status = 'No More Clues to Reveal!'
     if next_clue:
         status = next_clue + 'Revealed!'
@@ -70,8 +70,8 @@ def update_thread(app, room, gm):
                 socketio.emit('update', {'time': 'TIMES UP!', 'guesses': gm.latest_guess}, namespace='/room', room=room)
                 break
             if gm.time_to_open_clue:
-                nc = gm.open_next_clue()
-                socketio.emit('status', {'msg': nc + 'Revealed!'}, namespace='/room', room=room)
+                nc = gm.song.open_next_clue()
+                socketio.emit('status', {'msg': nc + ' Revealed!'}, namespace='/room', room=room)
             socketio.emit('update', gm.jsonify(), namespace='/room', room=room)
             socketio.sleep(tick_time)
 

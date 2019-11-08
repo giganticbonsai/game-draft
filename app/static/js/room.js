@@ -24,7 +24,8 @@ $(document).ready(function(){
         clue_values = '';
         for (var key in clues) {
             if (clues.hasOwnProperty(key)) {
-            clue_values = clue_values + '<li id="' + key +'">' + clues[key] + '</li>';
+            img = '<img src="'+ clues[key]['image'] +'" height="42" width="42">'
+            clue_values = clue_values + '<li id="' + key +'">' + clues[key]['value'] + img + '</li>';
             }
         }
         $('#clues').html(clue_values);
@@ -45,7 +46,4 @@ function leave_room() {
         // go back to the login page
         window.location.href = "{{ url_for('main.index') }}";
     });
-}
-function open_clue() {
-    socket.emit('open_clue', {});
 }

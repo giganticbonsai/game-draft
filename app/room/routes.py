@@ -14,14 +14,14 @@ def room(room):
     if name == '' or session_room == '' or session_room != room or room not in ROOMS:
         return redirect(url_for('main.index'))
     gm = ROOMS[room]
-    return render_template('room/room.html', room=room, name=name, song=gm.song, clues=gm.clues, hidden=gm.hidden_clues)
+    return render_template('room/room.html', room=room, name=name, song=gm.song.display_name)
 
 
 @bp.route('/create', methods=['GET', 'POST'])
 def create():
     form = CreateForm()
     if form.validate_on_submit():
-        gm = Manager(form.song.data, duration=form.duration.data)
+        gm = Manager(form.song.data, form.artist.data, spotify_manager=spotify, duration=form.duration.data)
         while gm.room_id in ROOMS:
             # Generate new id if id already in manager
             gm.generate_room_id()
