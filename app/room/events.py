@@ -38,18 +38,6 @@ def left(message):
     gm.remove_player(name)
     emit('status', {'msg': session.get('name') + ' has left the room.'}, room=room)
 
-
-@socketio.on('open_clue', namespace='/room')
-def open_clue(data):
-    room = session.get('room')
-    gm = ROOMS[room]
-    next_clue = gm.song.open_next_clue()
-    status = 'No More Clues to Reveal!'
-    if next_clue:
-        status = next_clue + 'Revealed!'
-    emit('status', {'msg': status}, room=room)
-
-
 @socketio.on('connect', namespace='/room')
 def on_connect():
     global thread

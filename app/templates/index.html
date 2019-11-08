@@ -1,26 +1,13 @@
-<h1>Home</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.name.label }}<br>
-            {{ form.name(size=32) }}
-            {% for error in form.name.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.room.label }}<br>
-            {{ form.room(size=32) }}
-            {% for error in form.room.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <nav>
-        <div>
-            <ul>
-                <li><a href="{{ url_for('room.create') }}">Create Room</a></li>
-            </ul>
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Join Room</h1>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
         </div>
-    </nav>
+    </div>
+    <br>
+    <p><a href="{{ url_for('room.create') }}">Create Room</a></p>
+{% endblock %}

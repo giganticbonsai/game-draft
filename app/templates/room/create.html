@@ -1,60 +1,25 @@
-<html>
-    <head>
-        <title>Create Room</title>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.js"></script>
-    </head>
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-    <style>
-     .ui-autocomplete-loading {
-       background: white url("{{ url_for('static', filename='images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
-     }
-     .autocomplete-suggestions {
-        overflow: auto;
-        border: 1px solid #CBD3DD;
-        background: #FFF;
-     }
-    </style>
+{% block styles -%}
+{{super()}}
+    <link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.css" rel="stylesheet"/>
+{% endblock styles %}
 
-    <body>
+{% block app_content %}
         <h1>Create</h1>
-            <form action="" method="post" novalidate>
-                {{ form.hidden_tag() }}
-                <p>
-                    {{ form.name.label }}<br>
-                    {{ form.name(size=32) }}
-                    {% for error in form.name.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>
-                    {{ form.song.label }}<br>
-                    {{ form.song(size=32) }}
-                    {% for error in form.song.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>
-                    {{ form.artist.label }}<br>
-                    {{ form.artist(size=32) }}
-                    {% for error in form.artist.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>
-                    {{ form.duration.label }}<br>
-                    {{ form.duration(size=32) }}
-                    {% for error in form.duration.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>{{ form.submit() }}</p>
-            </form>
-    </body>
-</html>
+        <div class="row">
+            <div class="col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
+        </div>
+{% endblock %}
 
-{% block javascript %}
-    <script>
+{% block scripts %}
+{{super()}}
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.js"></script>
+<script>
 $(function() {
 $('#autocomplete').autocomplete({
     source: function( request, response ) {
@@ -71,5 +36,5 @@ $('#autocomplete').autocomplete({
     }
     });
 });
-    </script>
+</script>
 {% endblock %}

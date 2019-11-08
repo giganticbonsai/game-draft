@@ -1,11 +1,7 @@
-<html>
-    <head>
-        <title>Guess The Song!: {{ room }}</title>
-        <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-    </head>
-    <body>
-        <h1>Room ID: {{ room }}</h1>
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
         <h2 id="song"></h2>
         <div id="time"></div>
         <div>
@@ -13,13 +9,19 @@
         </div>
         <textarea id="chat" cols="80" rows="20"></textarea><br><br>
         <input id="text" size="80" placeholder="Enter your message here"><br><br>
-        <a href="#" onclick="leave_room();">Leave this room</a>
         <h3>Latest Guesses:</h3>
         <div id="latest_guesses"></div>
-    </body>
-</html>
-
-{% block javascript %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/room.js') }}"></script>
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="leave_room();">Leave Room</a>
+            </li>
+        </ul>
 {% endblock %}
 
+
+{% block scripts %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/room.js') }}"></script>
+{{super()}}
+{% endblock %}

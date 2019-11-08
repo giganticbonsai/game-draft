@@ -14,7 +14,7 @@ def room(room):
     if name == '' or session_room == '' or session_room != room or room not in ROOMS:
         return redirect(url_for('main.index'))
     gm = ROOMS[room]
-    return render_template('room/room.html', room=room, name=name, song=gm.song.display_name)
+    return render_template('room/room.html', title=room, name=name, song=gm.song.display_name)
 
 
 @bp.route('/create', methods=['GET', 'POST'])
@@ -30,7 +30,7 @@ def create():
         session['name'] = form.name.data
         session['room'] = room_id
         return redirect(url_for('room.room', room=session.get('room', '')))
-    return render_template('room/create.html', form=form)
+    return render_template('room/create.html', form=form, title='Create Room')
 
 
 @bp.route('/song_autocomplete', methods=['GET', 'POST'])
