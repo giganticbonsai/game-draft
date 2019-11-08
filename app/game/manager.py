@@ -26,11 +26,12 @@ class Manager(object):
 
     @property
     def playtime(self):
-        if self.date_end <= datetime.utcnow():
-            return
         td = self.date_end - datetime.utcnow()
         time_since = divmod(td.days*86400 + td.seconds, 60)
-        return [td, '{0} minutes, {1:02d} seconds'.format(time_since[0], time_since[1])]
+        time_str = '{0} minutes, {1:02d} seconds'.format(time_since[0], time_since[1])
+        if self.date_end <= datetime.utcnow():
+            time_str = '00:00'
+        return [td, time_str]
 
     @property
     def latest_guess(self):
@@ -61,12 +62,14 @@ class Manager(object):
 
     def is_song(self, guess):
         if self.song.is_answer(guess):
-            self.guesses.insert(0, guess)
-            return False
-        return True
+            self.end_game()
+            return True
+        self.guesses.insert(0, guess)
+        return False
 
     def jsonify(self):
         return {
+            'song': self.song.display_name,
             'time': self.playtime[1],
             'guesses': self.latest_guess,
             'clues': self.clues}
@@ -76,6 +79,9 @@ class Manager(object):
                         string.ascii_uppercase) for _ in range(current_app.config['ROOM_ID_LENGTH']))
 
     def end_game(self):
+        self.song.guessed = True
         while self.song.hidden_clues:
             self.song.open_next_clue()
+
+
 

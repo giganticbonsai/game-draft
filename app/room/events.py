@@ -63,16 +63,18 @@ def update_thread(app, room, gm):
     with app.app_context():
         tick_time = app.config.get('ROOM_UPDATE_INTERVAL', 1)
         while True:
+            socketio.emit('update', gm.jsonify(), namespace='/room', room=room)
+            if gm.song.guessed:
+                socketio.emit('update', gm.jsonify(), namespace='/room', room=room)
+                break
             if not gm.playtime:
                 # End Thread if times up
                 gm.end_game()
-                socketio.emit('status', {'msg': 'GAME OVER!'}, namespace='/room', room=room)
-                socketio.emit('update', {'time': 'TIMES UP!', 'guesses': gm.latest_guess}, namespace='/room', room=room)
+                socketio.emit('status', {'msg': 'TIMES UP! GAME OVER!'}, namespace='/room', room=room)
                 break
             if gm.time_to_open_clue:
                 nc = gm.song.open_next_clue()
                 socketio.emit('status', {'msg': nc + ' Revealed!'}, namespace='/room', room=room)
-            socketio.emit('update', gm.jsonify(), namespace='/room', room=room)
             socketio.sleep(tick_time)
 
 
@@ -82,8 +84,8 @@ def make_guess(message):
     room = session.get('room')
     gm = ROOMS[room]
     guess = message['msg']
-    if gm.is_song(guess):
-        gm.end_game()
+    gm.is_song(guess)
+    if gm.song.guessed:
         emit('status', {'msg': name + ' GUESSED CORRECTLY!'}, room=room)
     else:
         emit('guess', {'msg': name + ' guessed "{}". '.format(guess) + 'INCORRECT!'}, room=room)

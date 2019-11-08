@@ -14,6 +14,7 @@ $(document).ready(function(){
     });
     socket.on('update', function(data) {
         $('#time').html(data.time);
+        $('#song').html(data.song)
         var guesses = data.guesses
         latest_guesses = '';
         for (var i = 0; i < guesses.length; i++){

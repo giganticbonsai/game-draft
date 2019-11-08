@@ -17,7 +17,7 @@ class Guess(object):
         return self.scrambled
 
     def is_answer(self, guess):
-        return guess.strip().lower() != self.answer.strip().lower()
+        return guess.strip().lower() == self.answer.strip().lower()
 
     def _load_clues(self):
         self.hidden_clues = self.clues.keys()
