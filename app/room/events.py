@@ -53,13 +53,11 @@ def update_thread(app, room, gm):
         while True:
             socketio.emit('update', gm.jsonify(), namespace='/room', room=room)
             if gm.song.guessed:
-                socketio.emit('update', gm.jsonify(), namespace='/room', room=room)
                 break
-            if not gm.playtime:
+            if gm.playtime[1] == '00:00':
                 # End Thread if times up
                 gm.end_game()
                 socketio.emit('status', {'msg': 'TIMES UP! GAME OVER!'}, namespace='/room', room=room)
-                break
             if gm.time_to_open_clue:
                 nc = gm.song.open_next_clue()
                 socketio.emit('status', {'msg': nc + ' Revealed!'}, namespace='/room', room=room)
