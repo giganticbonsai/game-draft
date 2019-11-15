@@ -1,5 +1,7 @@
 import random
 
+from flask import url_for
+
 
 class Guess(object):
 
@@ -85,7 +87,7 @@ class Song(Guess):
         }
         hidden_value = {
             'value': 'Artist',
-            'image': 'To Add Blurred image'
+            'image': url_for('static', filename='images/hidden_clue.png')
         }
         self._add_clue('Artist', artist_clue, hidden_value)
 
@@ -96,7 +98,7 @@ class Song(Guess):
         }
         hidden_value = {
             'value': 'Album',
-            'image': 'To Add Blurred image'
+            'image': url_for('static', filename='images/hidden_clue.png')
         }
         self._add_clue('Album', album_clue, hidden_value)
 

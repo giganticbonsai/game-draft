@@ -20,13 +20,18 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">Home</a></li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if song %}
+                    <li><a href="#" onclick="leave_room();">Leave Room</a></li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container text-center">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}

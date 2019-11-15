@@ -18,15 +18,18 @@ $(document).ready(function(){
         var guesses = data.guesses
         latest_guesses = '';
         for (var i = 0; i < guesses.length; i++){
-            latest_guesses = latest_guesses + '<p>' + guesses[i] + '</p>';
+            latest_guesses = latest_guesses + '<li class="list-group-item">' + guesses[i] + '</li>';
         }
         $('#latest_guesses').html(latest_guesses);
         var clues = data.clues
         clue_values = '';
         for (var key in clues) {
             if (clues.hasOwnProperty(key)) {
-            img = '<img src="'+ clues[key]['image'] +'" height="42" width="42">'
-            clue_values = clue_values + '<li id="' + key +'">' + clues[key]['value'] + img + '</li>';
+            img = '<img src="'+ clues[key]['image'] +
+            '" class="bd-placeholder-img card-img-top" width="140" height="140" alt="Clue" class="img-circle>'
+            clue_values = clue_values +
+            '<div class="col-sm-4 col-md-offset-1"><div class="card mb-4 shadow-sm">' + img + '<div class="card-body"><h5 class="card-title text-center">'+
+             clues[key]['value'] +'</h5></div></div></div>';
             }
         }
         $('#clues').html(clue_values);

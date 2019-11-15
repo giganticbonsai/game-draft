@@ -10,6 +10,8 @@ from app.game.song import Song
 
 class Manager(object):
 
+    NUMBER_OF_GUESSES_SHOWN = 10
+
     def __init__(self, song, artist, spotify_manager, duration=5):
         self.room_id = 0
         self.players = []
@@ -21,7 +23,7 @@ class Manager(object):
     def _start_game(self, song, artist, duration):
         self.date_end = datetime.utcnow() + timedelta(minutes=duration)
         self.song = Song(self.spotify, song, artist)
-        self.guesses = []
+        self.guesses = [''] * self.NUMBER_OF_GUESSES_SHOWN
         self.open_clue_interval = duration/(len(self.song.hidden_clues)+1)
 
     @property
@@ -35,7 +37,7 @@ class Manager(object):
 
     @property
     def latest_guess(self):
-        return self.guesses[0:10]
+        return self.guesses[0:self.NUMBER_OF_GUESSES_SHOWN]
 
     @property
     def clues(self):

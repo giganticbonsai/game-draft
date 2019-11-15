@@ -2,20 +2,34 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-        <h2 id="song"></h2>
-        <div id="time"></div>
-        <div>
-            <ul id="clues"></ul>
+        <div class="container jumbotron text-center">
+            <h1 id="song" class="jumbotron-heading"></h1>
+            <p id="time" class="lead text-muted"></p>
         </div>
-        <textarea id="chat" cols="80" rows="20"></textarea><br><br>
-        <input id="text" size="80" placeholder="Enter your message here"><br><br>
-        <h3>Latest Guesses:</h3>
-        <div id="latest_guesses"></div>
-        <ul class="nav justify-content-center">
-            <li class="nav-item">
-                <a class="nav-link active" href="#" onclick="leave_room();">Leave Room</a>
-            </li>
-        </ul>
+        <div class="container">
+            <div id="clues" class="row"></div>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                  <textarea id="chat" class="form-control" readonly></textarea>
+                </div>
+                <div class="col-sm-6">
+                    <p>Latest Guesses</p>
+                    <ul id="latest_guesses" class="list-group list-group-flush"></ul>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="input-group col-sm-12">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Make A Guess</span>
+              </div>
+              <input id="text" size="80" placeholder="Enter Guess Here" type="text" class="form-control">
+            </div>
+        </div>
 {% endblock %}
 
 
