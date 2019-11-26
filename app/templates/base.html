@@ -28,6 +28,15 @@
 {% endblock %}
 
 {% block content %}
+    {% block footer %}
+    <footer class="footer">
+        <div class="container text-center">
+            <span class="text-muted">Created by: Woodenpuppy</span>
+        </div>
+    </footer>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}"/>
+    {% endblock %}
+
     <div class="container text-center">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -41,4 +50,3 @@
         {% block app_content %}{% endblock %}
     </div>
 {% endblock %}
-

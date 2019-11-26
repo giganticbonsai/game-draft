@@ -28,8 +28,8 @@ $(document).ready(function(){
             img = '<img src="'+ clues[key]['image'] +
             '" class="bd-placeholder-img card-img-top" width="140" height="140" alt="Clue" class="img-circle">'
             clue_values = clue_values +
-            '<div class="col-sm-4 col-md-offset-1"><div class="card mb-4 shadow-sm">' + img + '<div class="card-body"><h5 class="card-title text-center">'+
-             clues[key]['value'] +'</h5></div></div></div>';
+            '<div class="col-sm-3 col-md-offset-1"><div class="card mb-4 shadow-sm"><div class="card-body"><h5 class="card-title text-center">'+
+             clues[key]['value'] +'</h5></div>' + img + '</div></div>';
             }
         }
         $('#clues').html(clue_values);
