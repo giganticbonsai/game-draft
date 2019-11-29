@@ -14,7 +14,7 @@ class Manager(object):
 
     def __init__(self, song, artist, spotify_manager, duration=5):
         self.room_id = 0
-        self.players = []
+        self.players = {}
         self.spotify = spotify_manager
 
         self.generate_room_id()
@@ -57,15 +57,26 @@ class Manager(object):
         return bool(((self.playtime[0].total_seconds()/60)/len(self.song.hidden_clues)) < self.open_clue_interval)
 
     def add_player(self, name):
-        self.players.append(name)
+        if name in self.players:
+            self.players[name]['active'] = True
+        else:
+            self.players[name] = {
+                'guesses': 0,
+                'points': 0,
+                'active': True
+            }
 
     def remove_player(self, name):
-        self.players.remove(name)
+        if name in self.players:
+            self.players[name]['active'] = False
 
-    def is_song(self, guess):
-        if self.song.is_answer(guess):
-            self.end_game()
-            return True
+    def is_song(self, guess, name):
+        if name in self.players:
+            self.players[name]['guesses'] += 1
+            if self.song.is_answer(guess):
+                self.players[name]['points'] += 1
+                self.end_game()
+                return True
         self.guesses.insert(0, guess)
         return False
 
@@ -74,7 +85,8 @@ class Manager(object):
             'song': self.song.display_name,
             'time': self.playtime[1],
             'guesses': self.latest_guess,
-            'clues': self.clues}
+            'clues': self.clues,
+            'players': self.players}
 
     def generate_room_id(self):
         self.room_id = ''.join(random.SystemRandom().choice(

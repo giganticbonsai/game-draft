@@ -70,7 +70,7 @@ def make_guess(message):
     room = session.get('room')
     gm = ROOMS[room]
     guess = message['msg']
-    gm.is_song(guess)
+    gm.is_song(guess, name)
     if gm.song.guessed:
         emit('status', {'msg': name + ' GUESSED CORRECTLY!'}, room=room)
     else:

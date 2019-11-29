@@ -44,3 +44,7 @@ def song_autocomplete():
                 'artist': t['artists'][0]['name']}
                for t in tracks]
     return jsonify(options)
+
+@bp.route('/playlist_mode', methods=['GET', 'POST'])
+def get_playlist():
+    return
